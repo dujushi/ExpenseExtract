@@ -41,7 +41,17 @@ namespace ExpenseExtract.Services
 
         public void CheckExpenseTag()
         {
-            throw new NotImplementedException();
+            CheckIsContentInitialised();
+
+            var expenseTagContent = GetExpenseTagContent();
+            if (expenseTagContent == null)
+            {
+                throw new InvalidContentException($"Cannot find {Tags.Expense} tag");
+            }
+            if (expenseTagContent.Length == 0)
+            {
+                throw new InvalidContentException($"{Tags.Expense} tag is empty");
+            }
         }
 
         public void CheckTotalTag()
@@ -65,6 +75,26 @@ namespace ExpenseExtract.Services
             {
                 throw new InvalidContentException("Content is not set");
             }
+        }
+
+        private string GetExpenseTagContent()
+        {
+            var expenseTagContent = GetTagContent(Tags.Expense, _content);
+            return expenseTagContent;
+        }
+
+        private static string GetTagContent(string tagName, string content)
+        {
+            var tagPattern = $@"<({tagName})>(.*)</\1>";
+            var tagRegex = new Regex(tagPattern);
+            var tagRegexMatches = tagRegex.Matches(content);
+            if (tagRegexMatches.Count == 0)
+            {
+                return null;
+            }
+            // Use the latest tag if there are many.
+            var expense = tagRegexMatches.First().Groups[2].Value.Trim();
+            return expense;
         }
     }
 }
