@@ -1,5 +1,4 @@
-﻿using ExpenseExtract.Exceptions;
-using ExpenseExtract.Services;
+﻿using ExpenseExtract.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
