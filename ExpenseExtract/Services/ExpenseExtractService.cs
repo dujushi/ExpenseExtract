@@ -56,7 +56,21 @@ namespace ExpenseExtract.Services
 
         public void CheckTotalTag()
         {
-            throw new NotImplementedException();
+            CheckIsContentInitialised();
+
+            var totalTagContent = GetTotalTagContent();
+            if (totalTagContent == null)
+            {
+                throw new InvalidContentException($"Cannot find {Tags.Total} tag");
+            }
+            if (totalTagContent.Length == 0)
+            {
+                throw new InvalidContentException($"{Tags.Total} tag is empty");
+            }
+            if (!decimal.TryParse(totalTagContent, out _))
+            {
+                throw new InvalidContentException($"{Tags.Total} must be decimal: {totalTagContent}");
+            }
         }
 
         public void ValidateContent()
@@ -95,6 +109,13 @@ namespace ExpenseExtract.Services
             // Use the latest tag if there are many.
             var expense = tagRegexMatches.First().Groups[2].Value.Trim();
             return expense;
+        }
+
+        private string GetTotalTagContent()
+        {
+            var expenseTagContent = GetExpenseTagContent();
+            var totalTagContent = GetTagContent(Tags.Total, expenseTagContent ?? string.Empty);
+            return totalTagContent;
         }
     }
 }
