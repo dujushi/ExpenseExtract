@@ -9,16 +9,23 @@ namespace ExpenseExtract.Tests
     [TestClass]
     public class GstCalculateServiceTest
     {
-        [TestMethod]
-        public void GetGstExclusiveTotal_ReturnsCorrectValue()
+        private IGstCalculateService _gstCalculateService;
+
+        [TestInitialize]
+        public void TestInitialize()
         {
-            var mock = new Mock<ILogger<GstCalculateService>>();
+            var mockLogger = new Mock<ILogger<GstCalculateService>>();
             var gstCalculateOptions = Options.Create(new GstCalculateOptions
             {
                 Rate = 0.15m
             });
-            var gstCalculateService = new GstCalculateService(mock.Object, gstCalculateOptions);
-            var total = gstCalculateService.GetGstExclusiveTotal(115m);
+            _gstCalculateService = new GstCalculateService(mockLogger.Object, gstCalculateOptions);
+        }
+
+        [TestMethod]
+        public void GetGstExclusiveTotal_ReturnsCorrectValue()
+        {
+            var total = _gstCalculateService.GetGstExclusiveTotal(115m);
             Assert.AreEqual(100, total);
         }
     }
