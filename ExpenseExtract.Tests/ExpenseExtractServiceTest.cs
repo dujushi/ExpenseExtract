@@ -24,102 +24,84 @@ namespace ExpenseExtract.Tests
         [DataRow("<expense><total></expense>")]
         public void CheckUnclosedTags_WhenContentHasUnclosedTags_ThrowsInvalidContentException(string content)
         {
-            _expenseExtractService.SetContent(content);
-            Assert.ThrowsException<InvalidContentException>(() => _expenseExtractService.CheckUnclosedTags());
+            Assert.ThrowsException<InvalidContentException>(() => _expenseExtractService.CheckUnclosedTags(content));
         }
 
         [TestMethod]
         public void CheckUnclosedTags_WhenContentDoesNotHaveUnclosedTags_Passes()
         {
             const string content = "<expense></expense>";
-            _expenseExtractService.SetContent(content);
-            _expenseExtractService.CheckUnclosedTags();
+            _expenseExtractService.CheckUnclosedTags(content);
         }
 
         [TestMethod]
         public void CheckExpenseTag_WhenContentDoesNotHaveExpenseTag_ThrowsInvalidContentException()
         {
             const string content = "<total></total>";
-            _expenseExtractService.SetContent(content);
-            Assert.ThrowsException<InvalidContentException>(() => _expenseExtractService.CheckExpenseTag());
+            Assert.ThrowsException<InvalidContentException>(() => _expenseExtractService.CheckExpenseTag(content));
         }
 
         [TestMethod]
         public void CheckExpenseTag_WhenExpenseTagIsEmpty_ThrowsInvalidContentException()
         {
             const string content = "<expense></expense>";
-            _expenseExtractService.SetContent(content);
-            Assert.ThrowsException<InvalidContentException>(() => _expenseExtractService.CheckExpenseTag());
+            Assert.ThrowsException<InvalidContentException>(() => _expenseExtractService.CheckExpenseTag(content));
         }
 
         [TestMethod]
         public void CheckExpenseTag_WhenContentHasExpenseTag_Passes()
         {
             const string content = "<expense>test</expense>";
-            _expenseExtractService.SetContent(content);
-            _expenseExtractService.CheckExpenseTag();
+            _expenseExtractService.CheckExpenseTag(content);
         }
 
         [TestMethod]
         public void CheckTotalTag_WhenContentDoesNotHaveTotalTag_ThrowsInvalidContentException()
         {
             const string content = "<expense></expense>";
-            _expenseExtractService.SetContent(content);
-            Assert.ThrowsException<InvalidContentException>(() => _expenseExtractService.CheckTotalTag());
+            Assert.ThrowsException<InvalidContentException>(() => _expenseExtractService.CheckTotalTag(content));
         }
 
         [TestMethod]
         public void CheckTotalTag_WhenTotalTagNotWithinExpenseTag_ThrowsInvalidContentException()
         {
             const string content = "<total></total>";
-            _expenseExtractService.SetContent(content);
-            Assert.ThrowsException<InvalidContentException>(() => _expenseExtractService.CheckTotalTag());
+            Assert.ThrowsException<InvalidContentException>(() => _expenseExtractService.CheckTotalTag(content));
         }
 
         [TestMethod]
         public void CheckTotalTag_WhenTotalTagIsEmpty_ThrowsInvalidContentException()
         {
             const string content = "<expense><total></total></expense>";
-            _expenseExtractService.SetContent(content);
-            Assert.ThrowsException<InvalidContentException>(() => _expenseExtractService.CheckTotalTag());
+            Assert.ThrowsException<InvalidContentException>(() => _expenseExtractService.CheckTotalTag(content));
         }
 
         [TestMethod]
         public void CheckTotalTag_WhenTotalTagIsNotDecimal_ThrowsInvalidContentException()
         {
             const string content = "<expense><total>text</total></expense>";
-            _expenseExtractService.SetContent(content);
-            Assert.ThrowsException<InvalidContentException>(() => _expenseExtractService.CheckTotalTag());
+            Assert.ThrowsException<InvalidContentException>(() => _expenseExtractService.CheckTotalTag(content));
         }
 
         [TestMethod]
         public void CheckTotalTag_WhenTotalIsValid_Passes()
         {
             const string content = "<expense><total>11</total></expense>";
-            _expenseExtractService.SetContent(content);
-            _expenseExtractService.CheckTotalTag();
-        }
-
-        [TestMethod]
-        public void GetExpense_WhenContentIsNotSet_ThrowsInvalidContentException()
-        {
-            Assert.ThrowsException<InvalidContentException>(() => _expenseExtractService.GetExpense());
+            _expenseExtractService.CheckTotalTag(content);
         }
 
         [TestMethod]
         public void GetExpense_WhenDateIsInvalid_ThrowsInvalidContentException()
         {
             const string content = "<expense><total>11</total></expense><date>invalid date</date>";
-            _expenseExtractService.SetContent(content);
-            Assert.ThrowsException<InvalidContentException>(() => _expenseExtractService.GetExpense());
+            Assert.ThrowsException<InvalidContentException>(() => _expenseExtractService.GetExpense(content));
         }
 
         [TestMethod]
         public void GetExpense_WhenCostCentreIsNotSet_ReturnsDefaultValue()
         {
             const string content = "<expense><total>11</total></expense>";
-            _expenseExtractService.SetContent(content);
-            var expense = _expenseExtractService.GetExpense();
+            var expense = _expenseExtractService.GetExpense(content);
             Assert.AreEqual(CostCentres.Default, expense.CostCentre);
         }
     }

@@ -27,8 +27,7 @@ namespace ExpenseExtract.Controllers
         {
             try
             {
-                _expenseExtractService.SetContent(content);
-                var expense = _expenseExtractService.GetExpense();
+                var expense = _expenseExtractService.GetExpense(content);
                 return expense;
             }
             catch (InvalidContentException invalidContentException)
