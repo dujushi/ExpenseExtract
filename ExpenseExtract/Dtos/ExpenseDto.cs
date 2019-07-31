@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace ExpenseExtract.ViewModels
+namespace ExpenseExtract.Dtos
 {
-    public class ExpenseViewModel
+    public class ExpenseDto
     {
         public string CostCentre { get; set; }
         public decimal Total { get; set; }

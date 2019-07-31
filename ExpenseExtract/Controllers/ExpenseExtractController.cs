@@ -1,6 +1,6 @@
 ﻿using ExpenseExtract.Exceptions;
 using ExpenseExtract.Services;
-using ExpenseExtract.ViewModels;
+using ExpenseExtract.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -23,7 +23,7 @@ namespace ExpenseExtract.Controllers
         }
 
         [HttpPost]
-        public ActionResult<ExpenseViewModel> Post([FromBody] string content)
+        public ActionResult<ExpenseDto> Post([FromBody] string content)
         {
             try
             {
@@ -35,11 +35,11 @@ namespace ExpenseExtract.Controllers
             {
                 _logger.LogError("Invalid Content", invalidContentException);
 
-                var errorsViewModel = new ErrorsViewModel
+                var errorsViewModel = new ErrorsDto
                 {
                     Errors = new[]
                     {
-                        new ErrorViewModel
+                        new ErrorDto
                         {
                             Title = "Invalid Content",
                             Detail = invalidContentException.Message
