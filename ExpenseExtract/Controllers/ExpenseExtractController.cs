@@ -12,14 +12,17 @@ namespace ExpenseExtract.Controllers
     {
         private readonly ILogger _logger;
         private readonly IExpenseExtractService _expenseExtractService;
+        private readonly IGstCalculateService _gstCalculateService;
 
         public ExpenseExtractController(
             ILogger<ExpenseExtractController> logger,
-            IExpenseExtractService expenseExtractService
+            IExpenseExtractService expenseExtractService,
+            IGstCalculateService gstCalculateService
         )
         {
             _logger = logger;
             _expenseExtractService = expenseExtractService;
+            _gstCalculateService = gstCalculateService;
         }
 
         [HttpPost]
@@ -29,6 +32,7 @@ namespace ExpenseExtract.Controllers
             {
                 _expenseExtractService.SetContent(content);
                 var expense = _expenseExtractService.GetExpense();
+                expense.GstExclusiveTotal = _gstCalculateService.GetGstExclusiveTotal(expense.Total);
                 return expense;
             }
             catch (InvalidContentException invalidContentException)
