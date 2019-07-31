@@ -75,12 +75,50 @@ namespace ExpenseExtract.Services
 
         public void ValidateContent()
         {
-            throw new NotImplementedException();
+            CheckIsContentInitialised();
+            CheckUnclosedTags();
+            CheckExpenseTag();
+            CheckTotalTag();
         }
 
         public ExpenseViewModel GetExpense()
         {
-            throw new NotImplementedException();
+            ValidateContent();
+
+            var totalTagContent = GetTotalTagContent();
+            var total = decimal.Parse(totalTagContent); // It is safe to parse total directly. It has passed validation.
+
+            var expenseTagContent = GetExpenseTagContent();
+            var costCentre = GetTagContent(Tags.CostCentre, expenseTagContent);
+            var paymentMethod = GetTagContent(Tags.PaymentMethod, expenseTagContent);
+
+            var vendor = GetTagContent(Tags.Vendor, _content);
+            var description = GetTagContent(Tags.Description, _content);
+
+            var expenseViewModel = new ExpenseViewModel
+            {
+                CostCentre = string.IsNullOrEmpty(costCentre) ? CostCentres.Default : costCentre,
+                Total = total,
+                PaymentMethod = paymentMethod,
+                Vendor = vendor,
+                Description = description
+            };
+
+            var dateTagContent = GetTagContent(Tags.Date, _content);
+            if (string.IsNullOrEmpty(dateTagContent))
+            {
+                return expenseViewModel;
+            }
+
+            if (DateTime.TryParse(dateTagContent, out var date))
+            {
+                expenseViewModel.Date = date;
+            }
+            else
+            {
+                throw new InvalidContentException($"Invalid {Tags.Date}: {dateTagContent}");
+            }
+            return expenseViewModel;
         }
 
         private void CheckIsContentInitialised()
