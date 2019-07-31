@@ -53,5 +53,50 @@ namespace ExpenseExtract.Tests
             expenseExtractService.SetContent(content);
             expenseExtractService.CheckExpenseTag();
         }
+
+        [TestMethod]
+        public void CheckTotalTag_WhenContentDoesNotHaveTotalTag_ThrowsInvalidContentException()
+        {
+            var expenseExtractService = new ExpenseExtractService();
+            const string content = "<expense></expense>";
+            expenseExtractService.SetContent(content);
+            Assert.ThrowsException<InvalidContentException>(() => expenseExtractService.CheckTotalTag());
+        }
+
+        [TestMethod]
+        public void CheckTotalTag_WhenTotalTagNotWithinExpenseTag_ThrowsInvalidContentException()
+        {
+            var expenseExtractService = new ExpenseExtractService();
+            const string content = "<total></total>";
+            expenseExtractService.SetContent(content);
+            Assert.ThrowsException<InvalidContentException>(() => expenseExtractService.CheckTotalTag());
+        }
+
+        [TestMethod]
+        public void CheckTotalTag_WhenTotalTagIsEmpty_ThrowsInvalidContentException()
+        {
+            var expenseExtractService = new ExpenseExtractService();
+            const string content = "<expense><total></total></expense>";
+            expenseExtractService.SetContent(content);
+            Assert.ThrowsException<InvalidContentException>(() => expenseExtractService.CheckTotalTag());
+        }
+
+        [TestMethod]
+        public void CheckTotalTag_WhenTotalTagIsNotDecimal_ThrowsInvalidContentException()
+        {
+            var expenseExtractService = new ExpenseExtractService();
+            const string content = "<expense><total>text</total></expense>";
+            expenseExtractService.SetContent(content);
+            Assert.ThrowsException<InvalidContentException>(() => expenseExtractService.CheckTotalTag());
+        }
+
+        [TestMethod]
+        public void CheckTotalTag_WhenTotalIsValid_Passes()
+        {
+            var expenseExtractService = new ExpenseExtractService();
+            const string content = "<expense><total>11</total></expense>";
+            expenseExtractService.SetContent(content);
+            expenseExtractService.CheckTotalTag();
+        }
     }
 }
