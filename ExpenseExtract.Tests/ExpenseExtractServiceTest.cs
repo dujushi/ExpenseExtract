@@ -26,5 +26,32 @@ namespace ExpenseExtract.Tests
             expenseExtractService.SetContent(content);
             expenseExtractService.CheckUnclosedTags();
         }
+
+        [TestMethod]
+        public void CheckExpenseTag_WhenContentDoesNotHaveExpenseTag_ThrowsInvalidContentException()
+        {
+            var expenseExtractService = new ExpenseExtractService();
+            const string content = "<total></total>";
+            expenseExtractService.SetContent(content);
+            Assert.ThrowsException<InvalidContentException>(() => expenseExtractService.CheckExpenseTag());
+        }
+
+        [TestMethod]
+        public void CheckExpenseTag_WhenExpenseTagIsEmpty_ThrowsInvalidContentException()
+        {
+            var expenseExtractService = new ExpenseExtractService();
+            const string content = "<expense></expense>";
+            expenseExtractService.SetContent(content);
+            Assert.ThrowsException<InvalidContentException>(() => expenseExtractService.CheckExpenseTag());
+        }
+
+        [TestMethod]
+        public void CheckExpenseTag_WhenContentHasExpenseTag_Passes()
+        {
+            var expenseExtractService = new ExpenseExtractService();
+            const string content = "<expense>test</expense>";
+            expenseExtractService.SetContent(content);
+            expenseExtractService.CheckExpenseTag();
+        }
     }
 }
