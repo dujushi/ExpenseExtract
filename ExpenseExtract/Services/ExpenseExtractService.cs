@@ -9,6 +9,12 @@ namespace ExpenseExtract.Services
     public class ExpenseExtractService : IExpenseExtractService
     {
         private string _content;
+        private readonly IGstCalculateService _gstCalculateService;
+
+        public ExpenseExtractService(IGstCalculateService gstCalculateService)
+        {
+            _gstCalculateService = gstCalculateService;
+        }
 
         public void SetContent(string content)
         {
@@ -87,6 +93,7 @@ namespace ExpenseExtract.Services
 
             var totalTagContent = GetTotalTagContent();
             var total = decimal.Parse(totalTagContent); // It is safe to parse total directly. It has passed validation.
+            var gstExclusiveTotal = _gstCalculateService.GetGstExclusiveTotal(total);
 
             var expenseTagContent = GetExpenseTagContent();
             var costCentre = GetTagContent(Tags.CostCentre, expenseTagContent);
@@ -99,6 +106,7 @@ namespace ExpenseExtract.Services
             {
                 CostCentre = string.IsNullOrEmpty(costCentre) ? CostCentres.Default : costCentre,
                 Total = total,
+                GstExclusiveTotal = gstExclusiveTotal,
                 PaymentMethod = paymentMethod,
                 Vendor = vendor,
                 Description = description
