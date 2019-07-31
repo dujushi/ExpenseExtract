@@ -1,4 +1,5 @@
 ﻿using ExpenseExtract.Services;
+using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ExpenseExtract.Tests
@@ -9,7 +10,11 @@ namespace ExpenseExtract.Tests
         [TestMethod]
         public void GetGstExclusiveTotal_ReturnsCorrectValue()
         {
-            var gstCalculateService = new GstCalculateService();
+            var gstCalculateOptions = Options.Create(new GstCalculateOptions
+            {
+                Rate = 0.15m
+            });
+            var gstCalculateService = new GstCalculateService(gstCalculateOptions);
             var total = gstCalculateService.GetGstExclusiveTotal(115m);
             Assert.AreEqual(100, total);
         }

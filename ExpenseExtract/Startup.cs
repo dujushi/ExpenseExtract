@@ -1,4 +1,5 @@
-﻿using ExpenseExtract.Services;
+﻿using ExpenseExtract.Exceptions;
+using ExpenseExtract.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +20,23 @@ namespace ExpenseExtract
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<GstCalculateOptions>(options =>
+            {
+                if (decimal.TryParse(Configuration["GstRate"], out var rate))
+                {
+                    if (rate < 0 || rate > 1)
+                    {
+                        throw new InvalidConfigurationException("GstRate should be between 0 and 1");
+                    }
+                    options.Rate = rate;
+                }
+                else
+                {
+                    throw new InvalidConfigurationException("GstRate should be decimal");
+                }
+            });
             services.AddSingleton<IExpenseExtractService, ExpenseExtractService>();
+            services.AddSingleton<IGstCalculateService, GstCalculateService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
