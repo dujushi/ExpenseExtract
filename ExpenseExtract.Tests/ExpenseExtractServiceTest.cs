@@ -98,5 +98,31 @@ namespace ExpenseExtract.Tests
             expenseExtractService.SetContent(content);
             expenseExtractService.CheckTotalTag();
         }
+
+        [TestMethod]
+        public void GetExpense_WhenContentIsNotSet_ThrowsInvalidContentException()
+        {
+            var expenseExtractService = new ExpenseExtractService();
+            Assert.ThrowsException<InvalidContentException>(() => expenseExtractService.GetExpense());
+        }
+
+        [TestMethod]
+        public void GetExpense_WhenDateIsInvalid_ThrowsInvalidContentException()
+        {
+            var expenseExtractService = new ExpenseExtractService();
+            const string content = "<expense><total>11</total></expense><date>invalid date</date>";
+            expenseExtractService.SetContent(content);
+            Assert.ThrowsException<InvalidContentException>(() => expenseExtractService.GetExpense());
+        }
+
+        [TestMethod]
+        public void GetExpense_WhenCostCentreIsNotSet_ReturnsDefaultValue()
+        {
+            var expenseExtractService = new ExpenseExtractService();
+            const string content = "<expense><total>11</total></expense>";
+            expenseExtractService.SetContent(content);
+            var expense = expenseExtractService.GetExpense();
+            Assert.AreEqual(CostCentres.Default, expense.CostCentre);
+        }
     }
 }
