@@ -1,5 +1,5 @@
 ﻿using ExpenseExtract.Exceptions;
-using ExpenseExtract.ViewModels;
+using ExpenseExtract.Dtos;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -87,7 +87,7 @@ namespace ExpenseExtract.Services
             CheckTotalTag();
         }
 
-        public ExpenseViewModel GetExpense()
+        public ExpenseDto GetExpense()
         {
             ValidateContent();
 
@@ -102,7 +102,7 @@ namespace ExpenseExtract.Services
             var vendor = GetTagContent(Tags.Vendor, _content);
             var description = GetTagContent(Tags.Description, _content);
 
-            var expenseViewModel = new ExpenseViewModel
+            var expenseViewModel = new ExpenseDto
             {
                 CostCentre = string.IsNullOrEmpty(costCentre) ? CostCentres.Default : costCentre,
                 Total = total,

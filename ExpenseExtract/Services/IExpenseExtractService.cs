@@ -1,4 +1,4 @@
-﻿using ExpenseExtract.ViewModels;
+﻿using ExpenseExtract.Dtos;
 
 namespace ExpenseExtract.Services
 {
@@ -9,6 +9,6 @@ namespace ExpenseExtract.Services
         void CheckExpenseTag();
         void CheckTotalTag();
         void ValidateContent();
-        ExpenseViewModel GetExpense();
+        ExpenseDto GetExpense();
     }
 }
