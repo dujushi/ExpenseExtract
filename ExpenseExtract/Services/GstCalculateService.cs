@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Options;
+﻿using ExpenseExtract.Exceptions;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 
 namespace ExpenseExtract.Services
@@ -7,9 +9,17 @@ namespace ExpenseExtract.Services
     {
         private readonly GstCalculateOptions _options;
 
-        public GstCalculateService(IOptions<GstCalculateOptions> options)
+        public GstCalculateService(ILogger<GstCalculateService> logger, IOptions<GstCalculateOptions> options)
         {
-            _options = options.Value;
+            try
+            {
+                _options = options.Value;
+            }
+            catch (InvalidConfigurationException invalidConfigurationException)
+            {
+                logger.LogError("invalid configuration", invalidConfigurationException);
+                throw;
+            }
         }
 
         public decimal GetGstExclusiveTotal(decimal gstInclusiveTotal)
