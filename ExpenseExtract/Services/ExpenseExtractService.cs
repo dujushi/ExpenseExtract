@@ -1,8 +1,9 @@
-﻿using System;
+﻿using ExpenseExtract.Dtos;
+using ExpenseExtract.Exceptions;
+using System;
 using System.Linq;
 using System.Text.RegularExpressions;
-using ExpenseExtract.Dtos;
-using ExpenseExtract.Exceptions;
+using System.Web;
 
 namespace ExpenseExtract.Services
 {
@@ -91,12 +92,12 @@ namespace ExpenseExtract.Services
 
             var expenseViewModel = new ExpenseDto
             {
-                CostCentre = string.IsNullOrEmpty(costCentre) ? CostCentres.Default : costCentre,
+                CostCentre = string.IsNullOrEmpty(costCentre) ? CostCentres.Default : HttpUtility.HtmlEncode(costCentre),
                 Total = total,
                 GstExclusiveTotal = gstExclusiveTotal,
-                PaymentMethod = paymentMethod,
-                Vendor = vendor,
-                Description = description
+                PaymentMethod = HttpUtility.HtmlEncode(paymentMethod),
+                Vendor = HttpUtility.HtmlEncode(vendor),
+                Description = HttpUtility.HtmlEncode(description)
             };
 
             var dateTagContent = GetTagContent(Tags.Date, content);

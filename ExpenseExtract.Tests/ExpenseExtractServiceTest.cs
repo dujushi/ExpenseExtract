@@ -104,5 +104,24 @@ namespace ExpenseExtract.Tests
             var expense = _expenseExtractService.GetExpense(content);
             Assert.AreEqual(CostCentres.Default, expense.CostCentre);
         }
+
+        [TestMethod]
+        public void GetExpense_WhenValuesContainTags_ReturnsEncodedValues()
+        {
+            const string content = @"
+<expense>
+    <cost_centre><script>alert('cost_centre')</script></cost_centre>
+    <total>11</total>
+    <payment_method><script>alert('payment_method')</script></payment_method>
+</expense>
+<vendor><script>alert('vendor')</script></vendor>
+<description><script>alert('description')</script></description>
+";
+            var expense = _expenseExtractService.GetExpense(content);
+            Assert.AreEqual("&lt;script&gt;alert(&#39;cost_centre&#39;)&lt;/script&gt;", expense.CostCentre);
+            Assert.AreEqual("&lt;script&gt;alert(&#39;payment_method&#39;)&lt;/script&gt;", expense.PaymentMethod);
+            Assert.AreEqual("&lt;script&gt;alert(&#39;vendor&#39;)&lt;/script&gt;", expense.Vendor);
+            Assert.AreEqual("&lt;script&gt;alert(&#39;description&#39;)&lt;/script&gt;", expense.Description);
+        }
     }
 }
